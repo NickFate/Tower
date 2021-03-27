@@ -25,7 +25,7 @@ while game:
     screen.fill((255, 255, 255))
     screen.blit(player.image, (player.rect.x, player.rect.y))
     screen.blit(empy.image, (empy.rect.x, empy.rect.y))
-    player.update()
+    player.update(1, 1, 0, [empy])
 
     for e in pp.event.get():
 
