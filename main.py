@@ -2,8 +2,8 @@
 import pygame as pp
 
 from classes.player import Player
+from classes.border import Border
 from classes.empy import Empy
-
 
 FPS = 60
 
@@ -18,14 +18,18 @@ clock = pp.time.Clock()
 
 player = Player()
 
+border = Border(500)
+border1 = Border(300)
 empy = Empy()
-
 while game:
 
     screen.fill((255, 255, 255))
     screen.blit(player.image, (player.rect.x, player.rect.y))
+    screen.blit(player.attack_img, (player.attack_rect.x, player.attack_rect.y))
     screen.blit(empy.image, (empy.rect.x, empy.rect.y))
-    player.update(1, 1, 0, [empy])
+    screen.blit(border.image, (border.rect.x, border.rect.y))
+    screen.blit(border1.image, (border1.rect.x, border1.rect.y))
+    player.update([border, border1, empy])
 
     for e in pp.event.get():
 
