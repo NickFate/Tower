@@ -25,18 +25,23 @@ class Player(pp.sprite.Sprite):
         self.pull_time = 180
         self.pull_timer = 0
 
-        self.attack_img = pp.Surface((64, 96))
-        self.attack_rect = self.attack_img.get_rect()
+        self.attack_rect = pp.Surface((64, 96)).get_rect()
         self.attack_rect.x = self.rect.x - self.wight
         self.attack_rect.y = self.rect.y
+        self.attack_timer = 0
+        self.attack_time = 45
+
         self.last_sign = 1
+        self.attack_img.set_colorkey((0, 0, 0))
+
 
         # self.image.set_colorkey(Color(COLOR))
 
 
 
 
-    def update(self, platforms):
+    def update(self, platforms, enemy):
+
         key = pp.key.get_pressed()
 
         if key[pp.K_z]:
@@ -61,8 +66,6 @@ class Player(pp.sprite.Sprite):
         self.pull_timer += 1
 
 
-
-
         if not self.onGround:
             self.y_dir += self.grav
 
@@ -77,21 +80,47 @@ class Player(pp.sprite.Sprite):
         self.attack_rect.x = self.rect.x + self.wight * self.last_sign
         self.attack_rect.y = self.rect.y
 
-    def collide(self, xvel, yvel, platforms):
-        for p in platforms:
-            if pp.sprite.collide_rect(self, p):
+        if key[pp.K_x]:
+            if self.attack_timer == 0:
+                for i in enemy:
+                    if self.attack_rect.colliderect(i.rect):
+                        if i.hp:
+                            i.hp -= 7
+                self.attack_timer += 1
+        if self.attack_timer != 0:
+            self.attack_timer += 1
+            self.attack_img.fill((255, 0, 0))
+            print(1)
+        else:
+            print(2, self.attack_timer)
+            self.attack_img.set_colorkey((255, 0, 0))
 
-                if xvel > 0:
-                    self.rect.right = p.rect.left
+        if self.attack_timer > self.attack_time:
+            self.attack_timer = 0
 
-                if xvel < 0:
-                    self.rect.left = p.rect.right
+            # self.attack_img.set_colorkey((0, 0, 0))
 
-                if yvel > 0:
-                    self.rect.bottom = p.rect.top
-                    self.onGround = True
-                    self.y_dir = 0
+            # print(999999999999999999999999)
+        # print(self.attack_timer, self.attack_time)
 
-                if yvel < 0:
-                    self.rect.top = p.rect.bottom
-                    self.y_dir = 0
+
+
+    def collide(self, xvel, yvel, plat):
+        for platforms in plat:
+            for p in platforms:
+                if pp.sprite.collide_rect(self, p):
+
+                    if xvel > 0:
+                        self.rect.right = p.rect.left
+
+                    if xvel < 0:
+                        self.rect.left = p.rect.right
+
+                    if yvel > 0:
+                        self.rect.bottom = p.rect.top
+                        self.onGround = True
+                        self.y_dir = 0
+
+                    if yvel < 0:
+                        self.rect.top = p.rect.bottom
+                        self.y_dir = 0
